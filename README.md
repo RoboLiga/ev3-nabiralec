@@ -1,7 +1,7 @@
 # ev3-nabiralec
-Demonstracijski program za robota Lego Mindstorms EV3, ki se zna premikati po danih točkah na poligonu. Namenjeno tekmovanju Robo liga FRI 2019: Sadovnjak.
+Demonstracijski program za robota Lego Mindstorms EV3, ki se zna premikati po danih točkah na poligonu. Namenjeno tekmovanju !(Robo liga FRI 2019: Sadovnjak)[https://www.fri.uni-lj.si/sl/robo-liga-fri].
 
-Program je napisan v Python 3 in deluje na operacijskem sistemu ![ev3dev](https://www.ev3dev.org/). 
+Program je napisan v Python3 in deluje na operacijskem sistemu ![ev3dev](https://www.ev3dev.org/). 
 
 ## Priprava okolja
 
@@ -13,9 +13,9 @@ Na robota se povežete prek protokola SSH, datoteke pa nalagate nanj prek protok
 
 ## Namestitev potrebnih paketov
 
-
-
 Povežite se na robota in v terminalu izvršite naslednje ukaze za namestitev paketov `pycurl` in `ujson`:
+
+`sudo apt-get update`
 
 `sudo apt-get install python3-pycurl`
 
@@ -28,8 +28,9 @@ TODO
 TODO
  
 ## Priporočeni viri
+- Uradna stran projekta ev3dev: https://www.ev3dev.org/
 - Vodiči za programiranje EV3 v Pythonu: https://sites.google.com/site/ev3python/
-- Dokumentacija knjižnice python-ev3dev: https://ev3dev-lang.readthedocs.io/projects/python-ev3dev/en/stable/ 
+- Dokumentacija knjižnice `python-ev3dev`: https://ev3dev-lang.readthedocs.io/projects/python-ev3dev/en/stable/ 
 
 
 
