@@ -9,19 +9,23 @@ Sledite navodilom ![ev3dev Getting Started](https://www.ev3dev.org/docs/getting-
 
 Na robota se povežete prek protokola SSH, datoteke pa nalagate nanj prek protokola SFTP. Privzeto je uporabniško ime `robot` in geslo `maker`. 
  - Če uporabljate Windows, vam priporočamo uporabo programa ![MobaXterm](https://mobaxterm.mobatek.net/), ki združuje odjemalca za SSH in SFTP v učinkovitem grafičnem uporabniškem vmesniku.
- - Enostavnejša možnost pa je uporaba urejevalnika ![Visual Studio Code](https://code.visualstudio.com/) v kombinaciji z razširitvijo ![EV3 Device Browser](https://github.com/ev3dev/vscode-ev3dev-browser). ![Sledite tem izčrpnim navodilom](https://sites.google.com/site/ev3python/setting-up-vs-code). 
+ - Enostavnejša možnost pa je uporaba urejevalnika ![Visual Studio Code](https://code.visualstudio.com/) v kombinaciji z razširitvijo ![EV3 Device Browser](https://github.com/ev3dev/vscode-ev3dev-browser). Za namestitev in konfiguracijo ![sledite tem izčrpnim navodilom](https://sites.google.com/site/ev3python/setting-up-vs-code). 
 
 ## Namestitev potrebnih paketov
 
 
 
 Povežite se na robota in v terminalu izvršite naslednje ukaze za namestitev paketov `pycurl` in `ujson`:
+
 `sudo apt-get install python3-pycurl`
+
 `sudo apt-get install python3-ujson`
 
 ## Zagon programa
+TODO
 
 ## Kratek opis delovanja programa
+TODO
  
 ## Priporočeni viri
 - Vodiči za programiranje EV3 v Pythonu: https://sites.google.com/site/ev3python/
