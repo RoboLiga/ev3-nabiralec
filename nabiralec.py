@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """ 
-Program za vodenje robota EV3 do ciljne točke na poligonu.
+Program za vodenje robota EV3 po seznamu točk na poligonu.
 [Robo liga FRI 2019: Sadovnjak]
 """
 
@@ -15,9 +15,11 @@ __email__ = "nejc.ilc@fri.uni-lj.si"
 __status__ = "Active"
 
 
+# Če želite na svojem računalniku namestiti ev3dev knjižnico za Python:
 # pip install python-ev3dev
 from ev3dev.ev3 import TouchSensor, Button, LargeMotor, Sound
-# To install pycurl and ujson on EV3 brick, run:
+# Na EV3 robotu je potrebno namestiti paketa ujson in pycurl:
+# sudo apt-get update
 # sudo apt-get install python3-pycurl
 # sudo apt-get install python3-ujson
 import pycurl
@@ -38,9 +40,9 @@ SERVER_IP = "193.2.72.100"
 GAME_STATE_FILE = "game.json" 
 
 # Najvišja dovoljena hitrost motorjev.
-SPEED_HARD_LIMIT_ABS = 900 
+SPEED_LIMIT = 900
 # Najvišja dovoljena nazivna hitrost motorjev pri vožnji naravnost.
-# Naj bo manjša kot SPEED_HARD_LIMIT_ABS, da ima robot še možnost zavijati.
+# Naj bo manjša kot SPEED_LIMIT, da ima robot še možnost zavijati.
 SPEED_BASE_MAX = 800
 
 # Parametri za PID
@@ -62,7 +64,7 @@ HIST_QUEUE_LENGTH = 3
 # Dovoljena napaka v oddaljenosti do cilja [mm].
 DIST_EPS = 20
 # Dovoljena napaka pri obračanju [stopinje].
-DIR_EPS = 4
+DIR_EPS = 5
 # Bližina cilja [mm]
 DIST_CLOSE = 100
 # Koliko sekund je robot lahko stanju vožnje naravnost 
@@ -573,8 +575,8 @@ while do_main_loop and not btn.down:
                     speed_left = -u_base + u_turn
                     
             # Omejimo vrednosti za hitrosti na motorjih.
-            speed_right = round(min(max(speed_right, -SPEED_HARD_LIMIT_ABS), SPEED_HARD_LIMIT_ABS))
-            speed_left = round(min(max(speed_left, -SPEED_HARD_LIMIT_ABS), SPEED_HARD_LIMIT_ABS))
+            speed_right = round(min(max(speed_right, -SPEED_LIMIT), SPEED_LIMIT))
+            speed_left = round(min(max(speed_left, -SPEED_LIMIT), SPEED_LIMIT))
 
             # Vrtimo motorje
             motor_right.run_forever(speed_sp=speed_right)
