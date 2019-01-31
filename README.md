@@ -22,10 +22,18 @@ Povežite se na robota in v terminalu izvršite naslednje ukaze za namestitev pa
 `sudo apt-get install python3-ujson`
 
 ## Zagon programa
-TODO
+Na robota prenesite (SFTP) datoteko `nabiralec.py`.
+V terminalu na robotu se premaknite v mapo, ki vsebuje zgornjo datoteko. Najprej dajte datoteki pravice za izvajanje:
+
+`chmod +x nabiralec.py`
+
+Nato lahko program poženete:
+
+`./nabiralec.py`
+
 
 ## Kratek opis delovanja programa
-TODO
+
  
 ## Priporočeni viri
 - Uradna stran projekta ev3dev: https://www.ev3dev.org/
