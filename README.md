@@ -6,13 +6,13 @@ Program je napisan v Python3 in deluje na operacijskem sistemu [ev3dev](https://
 
 ## Priprava okolja
 
-Sledite navodilom ![ev3dev Getting Started](https://www.ev3dev.org/docs/getting-started/), da pridobite operacijski sistem `ev3dev-stretch` in ga namestite na SD kartico, ki ste jo dobili s kompletom. Za priklop v brezžično omrežje uporabite adapter za WiFi, ki ste ga prav tako dobili v kompletu.
+Sledite navodilom [ev3dev Getting Started](https://www.ev3dev.org/docs/getting-started/), da pridobite operacijski sistem `ev3dev-stretch` in ga namestite na SD kartico, ki ste jo dobili s kompletom. Za priklop v brezžično omrežje uporabite adapter za WiFi, ki ste ga prav tako dobili v kompletu.
 
 Na robota se povežete prek protokola SSH, datoteke pa nalagate nanj prek protokola SFTP. Privzeto je uporabniško ime `robot` in geslo `maker`.
 
-- Če uporabljate Windows, vam priporočamo uporabo programa ![MobaXterm](https://mobaxterm.mobatek.net/), ki združuje odjemalca za SSH in SFTP v učinkovitem grafičnem uporabniškem vmesniku.
+- Če uporabljate Windows, vam priporočamo uporabo programa [MobaXterm](https://mobaxterm.mobatek.net/), ki združuje odjemalca za SSH in SFTP v učinkovitem grafičnem uporabniškem vmesniku.
 
-- Enostavnejša možnost pa je uporaba urejevalnika ![Visual Studio Code](https://code.visualstudio.com/) v kombinaciji z razširitvijo ![EV3 Device Browser](https://github.com/ev3dev/vscode-ev3dev-browser). Za namestitev in konfiguracijo ![sledite tem izčrpnim navodilom](https://sites.google.com/site/ev3python/setting-up-vs-code).
+- Enostavnejša možnost pa je uporaba urejevalnika [Visual Studio Code](https://code.visualstudio.com/) v kombinaciji z razširitvijo [EV3 Device Browser](https://github.com/ev3dev/vscode-ev3dev-browser). Za namestitev in konfiguracijo [sledite tem izčrpnim navodilom](https://sites.google.com/site/ev3python/setting-up-vs-code).
 
 ## Namestitev potrebnih paketov
 
@@ -59,7 +59,7 @@ Nato lahko program poženete:
 
 - Del programa je namenjen preverjanju, ali je dotično tipalo priklopljeno na vhod. Za zgled smo uporabili tipalo za dotik (`TouchSensor`), vendar v sami kodi nismo uporabili njegove vrednosti.
 
-- Program na robotu izvaja premikanje po vnaprej določenih točkah na poligonu. Seznam je definiran kot `targets_list`. V našem primeru se bo robot vozil po notranjih kotih obeh košar. ![Več informacij o zapisu stanja tekme](https://github.com/RoboLiga/roboliga-meta/blob/master/Tehnicna-dokumentacija/Opis-game-json.md).
+- Program na robotu izvaja premikanje po vnaprej določenih točkah na poligonu. Seznam je definiran kot `targets_list`. V našem primeru se bo robot vozil po notranjih kotih obeh košar. [Več informacij o zapisu stanja tekme](https://github.com/RoboLiga/roboliga-meta/blob/master/Tehnicna-dokumentacija/Opis-game-json.md).
 
     ```Python
     targets_list = [
@@ -87,8 +87,8 @@ Nato lahko program poženete:
 
 ## Priporočeni viri
 
-- ![Uradna stran projekta ev3dev](https://www.ev3dev.org/)
+- [Uradna stran projekta ev3dev](https://www.ev3dev.org/)
 
-- ![Vodiči za programiranje EV3 v Pythonu](https://sites.google.com/site/ev3python/)
+- [Vodiči za programiranje EV3 v Pythonu](https://sites.google.com/site/ev3python/)
 
-- ![Dokumentacija knjižnice `python-ev3dev`](https://ev3dev-lang.readthedocs.io/projects/python-ev3dev/en/stable/)
+- [Dokumentacija knjižnice `python-ev3dev`](https://ev3dev-lang.readthedocs.io/projects/python-ev3dev/en/stable/)
