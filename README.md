@@ -42,8 +42,8 @@ Nato lahko program poženete:
     ```Python
     # ID robota. Spremenite, da ustreza številki označbe, ki je določena vaši ekipi.
     ROBOT_ID = 10
-    # Konfiguracija povezave na strežnik. LASPP strežnik ima naslov "193.2.72.3".
-    SERVER_IP = "193.2.72.3"
+    # Konfiguracija povezave na strežnik. LASPP strežnik ima naslov "192.168.0.3".
+    SERVER_IP = "192.168.0.3"
     ```
 
 - Predpostavljamo, da se datoteka `game.json`, ki hrani podatke o tekmi, nahaja v začetni (root) mapi na strežniku.
