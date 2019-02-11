@@ -33,8 +33,8 @@ from collections import deque
 
 # ID robota. Spremenite, da ustreza številki označbe, ki je določena vaši ekipi.
 ROBOT_ID = 10
-# Konfiguracija povezave na strežnik. LASPP strežnik ima naslov "193.2.72.3".
-SERVER_IP = "193.2.72.3"
+# Konfiguracija povezave na strežnik. LASPP strežnik ima naslov "192.168.0.3".
+SERVER_IP = "192.168.0.3"
 # Datoteka na strežniku s podatki o tekmi.
 GAME_STATE_FILE = "game.json"
 
