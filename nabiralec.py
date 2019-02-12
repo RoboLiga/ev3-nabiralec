@@ -374,7 +374,7 @@ def robot_die():
 # NASTAVITVE TIPAL, MOTORJEV IN POVEZAVE S STREŽNIKOM
 # -----------------------------------------------------------------------------
 # Nastavimo tipala in gumbe.
-print('Priprava tipal ... ', end='')
+print('Priprava tipal ... ', end='', flush=True)
 btn = Button()
 sensor_touch = init_sensor_touch()
 print('OK!')
@@ -387,7 +387,7 @@ print('OK!')
 
 # Nastavimo povezavo s strežnikom.
 url = SERVER_IP+'/'+GAME_STATE_FILE
-print('Vspostavljanje povezave z naslovom ' + url + ' ... ', end='')
+print('Vspostavljanje povezave z naslovom ' + url + ' ... ', end='', flush=True)
 conn = Connection(url)
 print('OK!')
 
@@ -421,7 +421,7 @@ targets_list = [
     Point(game_state['field']['baskets'][team_op_tag]['topLeft']),
     Point(game_state['field']['baskets'][team_op_tag]['bottomLeft']),
 ]
-print('Seznam ciljnih točk:')
+print('Seznam ciljnih tock:')
 for trgt in targets_list:
     print('\t' + str(trgt))
 
@@ -430,6 +430,7 @@ for trgt in targets_list:
 # GLAVNA ZANKA
 # -----------------------------------------------------------------------------
 print('Izvajam glavno zanko. Prekini jo s pritiskon na tipko DOL.')
+print('Cakam na zacetek tekme ...')
 
 # Začetno stanje.
 state = State.IDLE
