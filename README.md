@@ -59,6 +59,10 @@ Nato lahko program poženete:
 
 - Del programa je namenjen preverjanju, ali je dotično tipalo priklopljeno na vhod - funkcija `init_sensor_touch`. Za zgled smo uporabili tipalo za dotik (`TouchSensor`), vendar v sami kodi nismo uporabili njegove vrednosti. Klic te funkcije lahko mirno zakomentirate, morda pa vam vseeno pride kdaj prav.
 
+- Program se konča, če ugotovimo, da robot v trenutni tekmi ne tekmuje. Se pravi, da njegovega IDja ni na seznamu `currentGameTeams` v datoteki `gameData.json`, ki je del kode sledilca objektov (glej [navodila za sledenje objektom](https://github.com/RoboLiga/roboliga-meta/blob/master/Tehnicna-dokumentacija/Sledenje-objektom.md)). Poskrbite torej, da boste ustrezno nastavili zapise v `gameData.json`.
+
+- Robot miruje, če tekma ne teče (`game_state['gameOn'] == False`) ali če oznaka robota ni zaznana.
+
 - Program na robotu izvaja premikanje po vnaprej določenih točkah na poligonu. Seznam je definiran kot `targets_list`. V našem primeru se bo robot vozil po notranjih kotih obeh košar. [Več informacij o zapisu stanja tekme](https://github.com/RoboLiga/roboliga-meta/blob/master/Tehnicna-dokumentacija/Opis-game-json.md).
 
     ```Python
@@ -75,7 +79,7 @@ Nato lahko program poženete:
   - `TURN`: stanje obračanja robota na mestu z regulatorjem PID. Hitrost levega motorja je nasprotna vrednost hitrosti desnega motorja. Stanje je zaključeno, ko je robot obrnjen proti ciljni točki v toleranci `DIR_EPS` stopinj.
   - `DRIVE_STRAIGHT`: stanje vožnje "naravnost" (robot vmes tudi zavija, da ohranja ničelno napako v kotu med sabo in ciljem). Hitrost na motorju je sestavljena iz dveh delov: nazivna hitrost (base) in hitrost obračanja (turn). Vsaka od njih je podvržena regulaciji s svojim regulatorjem PID.
 
-- Robot miruje, če tekma ne teče (`game_state['gameOn'] == False`) ali če oznaka robota ni zaznana.
+
 
 - Za nastavitev hitrosti obeh motorjev uporabljamo regulator PID (sestavljen iz Proporcionalnega, Integralnega in oDvodnega člena), ki je določen z naslednjimi parametri:
   - `Kp`: ojačitev proporcionalnega dela regulatorja. Visoke vrednosti pomenijo hitrejši odziv sistema, vendar pozor: previsoke vrednosti povzročijo oscilacije in nestabilnost.
