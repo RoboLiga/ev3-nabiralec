@@ -57,7 +57,7 @@ Nato lahko program poženete:
 
 - Predpostavljamo, da ste velika motorja priklopili na izhoda A in D, lahko pa to nastavite v spremenljivkah `MOTOR_LEFT_PORT` in `MOTOR_RIGHT_PORT`.
 
-- Del programa je namenjen preverjanju, ali je dotično tipalo priklopljeno na vhod. Za zgled smo uporabili tipalo za dotik (`TouchSensor`), vendar v sami kodi nismo uporabili njegove vrednosti.
+- Del programa je namenjen preverjanju, ali je dotično tipalo priklopljeno na vhod - funkcija `init_sensor_touch`. Za zgled smo uporabili tipalo za dotik (`TouchSensor`), vendar v sami kodi nismo uporabili njegove vrednosti. Klic te funkcije lahko mirno zakomentirate, morda pa vam vseeno pride kdaj prav.
 
 - Program na robotu izvaja premikanje po vnaprej določenih točkah na poligonu. Seznam je definiran kot `targets_list`. V našem primeru se bo robot vozil po notranjih kotih obeh košar. [Več informacij o zapisu stanja tekme](https://github.com/RoboLiga/roboliga-meta/blob/master/Tehnicna-dokumentacija/Opis-game-json.md).
 
