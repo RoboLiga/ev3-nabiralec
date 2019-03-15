@@ -662,7 +662,7 @@ while do_main_loop and not btn.down:
             motor_left.run_forever(speed_sp=speed_left)
 
         else:
-            # Robot bodisi ni viden na kameri bodisi tema ne teče.
+            # Robot bodisi ni viden na kameri bodisi tekma ne teče.
             motor_left.stop(stop_action='brake')
             motor_right.stop(stop_action='brake')
 
