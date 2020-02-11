@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 """ 
-Program za vodenje robota EV3 po seznamu točk na poligonu.
+Program za vodenje robota EV3 po seznamu tock na poligonu.
 [Robo liga FRI 2019: Sadovnjak]
 """
 
@@ -15,7 +16,7 @@ __email__ = "nejc.ilc@fri.uni-lj.si"
 __status__ = "Active"
 
 
-# Če želite na svojem računalniku namestiti ev3dev knjižnico za Python:
+# Ce zelite na svojem racunalniku namestiti ev3dev knjiznico za Python:
 # pip install python-ev3dev
 from ev3dev.ev3 import TouchSensor, Button, LargeMotor, Sound
 # Na EV3 robotu je potrebno namestiti paketa ujson in pycurl:
@@ -31,12 +32,12 @@ from time import time, sleep
 from enum import Enum
 from collections import deque
 
-# ID robota. Spremenite, da ustreza številki označbe, ki je določena vaši ekipi.
-ROBOT_ID = 10
+# ID robota. Spremenite, da ustreza stevilki označbe, ki je določena vaši ekipi.
+ROBOT_ID = 25
 # Konfiguracija povezave na strežnik. LASPP strežnik ima naslov "192.168.0.3".
-SERVER_IP = "192.168.0.3"
+SERVER_IP = "192.168.1.130:8088/game/"
 # Datoteka na strežniku s podatki o tekmi.
-GAME_STATE_FILE = "game.json"
+GAME_ID = "ec0a"
 
 # Priklop motorjev na izhode.
 MOTOR_LEFT_PORT = 'outA'
@@ -137,7 +138,7 @@ class Connection():
         sum_time = 0
         for i in range(num_iters):
             start_time = time()
-            if self.request() == -1:
+            if self.request(True) == -1:
                 robot_die()
             elapsed_time = time() - start_time
             sum_time += elapsed_time
@@ -278,8 +279,8 @@ class Point():
     """
 
     def __init__(self, position):
-        self.x = position[0]
-        self.y = position[1]
+        self.x = position['x']
+        self.y = position['y']
 
     def __str__(self):
         return '('+str(self.x)+', '+str(self.y)+')'
@@ -386,7 +387,7 @@ motor_right = init_large_motor(MOTOR_RIGHT_PORT)
 print('OK!')
 
 # Nastavimo povezavo s strežnikom.
-url = SERVER_IP+'/'+GAME_STATE_FILE
+url = SERVER_IP + GAME_ID
 print('Vspostavljanje povezave z naslovom ' + url + ' ... ', end='', flush=True)
 conn = Connection(url)
 print('OK!')
@@ -402,10 +403,10 @@ print('%.4f s' % (conn.test_delay(num_iters=10)))
 # Pridobimo podatke o tekmi.
 game_state = conn.request()
 # Ali naš robot sploh tekmuje? Če tekmuje, ali je team1 ali team2?
-if ROBOT_ID == game_state['team1']['id']:
+if ROBOT_ID == game_state['teams']['team1']['id']:
     team_my_tag = 'team1'
     team_op_tag = 'team2'
-elif ROBOT_ID == game_state['team2']['id']:
+elif ROBOT_ID == game_state['teams']['team2']['id']:
     team_my_tag = 'team2'
     team_op_tag = 'team1'
 else:
@@ -416,10 +417,10 @@ print('Robot tekmuje in ima interno oznako "' + team_my_tag + '"')
 # Doloci cilj za robota (seznam točk na poligonu).
 # Našem primeru se bo vozil po notranjih kotih obeh košar.
 targets_list = [
-    Point(game_state['field']['baskets'][team_my_tag]['bottomRight']),
-    Point(game_state['field']['baskets'][team_my_tag]['topRight']),
-    Point(game_state['field']['baskets'][team_op_tag]['topLeft']),
-    Point(game_state['field']['baskets'][team_op_tag]['bottomLeft']),
+    Point(game_state['fields']['baskets'][team_my_tag]['bottomLeft']),
+    Point(game_state['fields']['baskets'][team_my_tag]['topLeft']),
+    Point(game_state['fields']['baskets'][team_op_tag]['topRight']),
+    Point(game_state['fields']['baskets'][team_op_tag]['bottomRight']),
 ]
 print('Seznam ciljnih tock:')
 for trgt in targets_list:
@@ -511,10 +512,10 @@ while do_main_loop and not btn.down:
         # najprej pa ga poišči v tabeli vseh robotov na poligonu.
         robot_pos = None
         robot_dir = None
-        for robot_data in game_state['robots']:
+        for robot_data in game_state['objects']['robots'].values():
             if robot_data['id'] == ROBOT_ID:
-                robot_pos = Point(robot_data['position'][0:2])
-                robot_dir = robot_data['direction']
+                robot_pos = Point(robot_data['position'])
+                robot_dir = robot_data['dir']
         # Ali so podatki o robotu veljavni? Če niso, je zelo verjetno,
         # da sistem ne zazna oznake na robotu.
         robot_alive = (robot_pos is not None) and (robot_dir is not None)
