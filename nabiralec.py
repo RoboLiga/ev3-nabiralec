@@ -3,11 +3,11 @@
 
 """ 
 Program za vodenje robota EV3 po seznamu tock na poligonu.
-[Robo liga FRI 2019: Sadovnjak]
+[Robo liga FRI 2020: Cebelnjak]
 """
 
 __author__ = "Laboratory for adaptive systems and parallel processing"
-__copyright__ = "Copyright 2019, UL FRI - LASPP"
+__copyright__ = "Copyright 2020, UL FRI - LASPP"
 __credits__ = ["Laboratory for adaptive systems and parallel processing"]
 __license__ = "GPL"
 __version__ = "0.1"
@@ -16,7 +16,8 @@ __email__ = "nejc.ilc@fri.uni-lj.si"
 __status__ = "Active"
 
 
-# Ce zelite na svojem racunalniku namestiti ev3dev knjiznico za Python:
+# Če želite na svojem računalniku namestiti knjižnico python-ev3dev 
+# in uprorabljati "code auto-completition":
 # pip install python-ev3dev
 from ev3dev.ev3 import TouchSensor, Button, LargeMotor, Sound
 # Na EV3 robotu je potrebno namestiti paketa ujson in pycurl:
@@ -32,18 +33,19 @@ from time import time, sleep
 from enum import Enum
 from collections import deque
 
-# ID robota. Spremenite, da ustreza stevilki označbe, ki je določena vaši ekipi.
+# Nastavitev najpomembnjših parametrov
+# ID robota. Spremenite, da ustreza številki označbe, ki je določena vaši ekipi.
 ROBOT_ID = 25
-# Konfiguracija povezave na strežnik. LASPP strežnik ima naslov "192.168.0.3".
+# Naslov IP igralnega strežnika.
 SERVER_IP = "192.168.1.130:8088/game/"
-# Datoteka na strežniku s podatki o tekmi.
+# Datoteka na igralnem strežniku s podatki o tekmi.
 GAME_ID = "ec0a"
 
 # Priklop motorjev na izhode.
 MOTOR_LEFT_PORT = 'outA'
 MOTOR_RIGHT_PORT = 'outD'
 
-# Najvišja dovoljena hitrost motorjev.
+# Najvišja dovoljena hitrost motorjev (teoretično je to 1000).
 SPEED_MAX = 900
 # Najvišja dovoljena nazivna hitrost motorjev pri vožnji naravnost.
 # Naj bo manjša kot SPEED_MAX, da ima robot še možnost zavijati.
@@ -136,7 +138,7 @@ class Connection():
         Zgolj informativno.
         """
         sum_time = 0
-        for i in range(num_iters):
+        for _ in range(num_iters):
             start_time = time()
             if self.request(True) == -1:
                 robot_die()
@@ -150,6 +152,7 @@ class PID():
     Implementacija algoritma za regulacijo PID.
     Nekaj virov za razjasnitev osnovnega načela delovanja:
         - https://en.wikipedia.org/wiki/PID_controller
+        - https://www.csimn.com/CSI_pages/PIDforDummies.html
         - https://blog.opticontrols.com/archives/344
         - https://www.youtube.com/watch?v=d2AWIA6j0NU
     """
@@ -258,6 +261,7 @@ class PID():
                 # Ojačitev integralnega dela.
                 I = self._Ki * self._integral
                 if self._integral_limit is not None:
+                    # Omejimo integralni del.
                     I = max(min(I, self._integral_limit),
                             (-1)*(self._integral_limit))
 
@@ -317,7 +321,7 @@ def init_large_motor(port: str) -> LargeMotor:
     motor = LargeMotor(port)
     while not motor.connected:
         print('\nPriklopi motor na izhod ' + port +
-              ' in pritisni + spusti gumb DOL.')
+              ' in pritisni ter spusti gumb DOL.')
         wait_for_button('down')
         motor = LargeMotor(port)
     return motor
@@ -330,7 +334,7 @@ def init_sensor_touch() -> TouchSensor:
     """
     sensor = TouchSensor()
     while not sensor.connected:
-        print('\nPriklopi tipalo za dotik in pritisni + spusti gumb DOL.')
+        print('\nPriklopi tipalo za dotik in pritisni ter spusti gumb DOL.')
         wait_for_button('down')
         sensor = TouchSensor()
     return sensor
@@ -392,7 +396,7 @@ print('Vspostavljanje povezave z naslovom ' + url + ' ... ', end='', flush=True)
 conn = Connection(url)
 print('OK!')
 
-# Izmerimo zakasnitev pri pridobivanju podatkov (povprečje num_iters meritev)
+# Informativno izmerimo zakasnitev pri pridobivanju podatkov (povprečje num_iters meritev)
 print('Zakasnitev v komunikaciji s streznikom ... ', end='', flush=True)
 print('%.4f s' % (conn.test_delay(num_iters=10)))
 
@@ -474,8 +478,8 @@ PID_frwd_turn = PID(
 speed_right = 0
 speed_left = 0
 
-# Zgodovina (okno) zadnjih nekaj vrednosti meritev,
-# implementirana kot vrsta FIFO.
+# Zgodovina (okno) zadnjih nekaj vrednosti meritev kota in razdalje.
+# Implementirana je kot vrsta FIFO.
 robot_dir_hist = deque([180.0] * HIST_QUEUE_LENGTH)
 robot_dist_hist = deque([math.inf] * HIST_QUEUE_LENGTH)
 
@@ -497,7 +501,7 @@ while do_main_loop and not btn.down:
         state_changed = False
     state_old = state
 
-    # Iz seznama ciljev izberi trenutnega.
+    # Iz seznama ciljev izberi naslednjega.
     target = targets_list[target_idx]
 
     # Osveži stanje tekme.
@@ -629,7 +633,7 @@ while do_main_loop and not btn.down:
                     speed_left = 0
                     state = State.LOAD_NEXT_TARGET
                 elif timer_near_target < 0:
-                    # Smo morda blizu cilja, in je varnostna budilka potekla?
+                    # Smo morda blizu cilja in je varnostna budilka potekla?
                     speed_right = 0
                     speed_left = 0
                     state = State.TURN
@@ -658,12 +662,13 @@ while do_main_loop and not btn.down:
                                 SPEED_MAX)
                             )
 
-            # Vrtimo motorje.
+            # Izračunane hitrosti zapišemo na motorje.
             motor_right.run_forever(speed_sp=speed_right)
             motor_left.run_forever(speed_sp=speed_left)
 
         else:
-            # Robot bodisi ni viden na kameri bodisi tekma ne teče.
+            # Robot bodisi ni viden na kameri bodisi tekma ne teče, 
+            # zato ustavimo motorje.
             motor_left.stop(stop_action='brake')
             motor_right.stop(stop_action='brake')
 
