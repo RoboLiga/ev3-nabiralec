@@ -1,8 +1,8 @@
 # ev3-nabiralec
 
-Demonstracijski program za robota Lego Mindstorms EV3, ki se zna premikati po danih točkah na poligonu. Namenjeno tekmovanju [Robo liga FRI 2019: Sadovnjak](https://www.fri.uni-lj.si/sl/robo-liga-fri).
+Demonstracijski program za robota Lego Mindstorms EV3, ki se zna premikati po danih točkah na poligonu. Namenjeno tekmovanju [Robo liga FRI 2020](https://www.fri.uni-lj.si/sl/robo-liga-fri).
 
-Program je napisan v Python3 in deluje na operacijskem sistemu [ev3dev](https://www.ev3dev.org/).
+Program je napisan v Python3 ([knjižnica python-ev3dev](https://ev3dev-lang.readthedocs.io/projects/python-ev3dev/en/ev3dev-jessie/)) in deluje na operacijskem sistemu [ev3dev](https://www.ev3dev.org/).
 
 ## Priprava okolja
 
@@ -42,11 +42,13 @@ Nato lahko program poženete:
     ```Python
     # ID robota. Spremenite, da ustreza številki označbe, ki je določena vaši ekipi.
     ROBOT_ID = 10
-    # Konfiguracija povezave na strežnik. LASPP strežnik ima naslov "192.168.0.3".
-    SERVER_IP = "192.168.0.3"
+    # Naslov IP igralnega strežnika.
+    SERVER_IP = "192.168.1.130:8088/game/"
+    # Datoteka na igralnem strežniku s podatki o tekmi.
+    GAME_ID = "ec0a"
     ```
 
-- Predpostavljamo, da se datoteka `game.json`, ki hrani podatke o tekmi, nahaja v začetni (root) mapi na strežniku.
+- Na naslovu `SERVER_IP/GAME_ID` dobimo podatke o tekmi v formatu JSON.
 
 - Vzpostavitev povezave s strežnikom in pošiljanje zahteve:
 
@@ -59,7 +61,7 @@ Nato lahko program poženete:
 
 - Del programa je namenjen preverjanju, ali je dotično tipalo priklopljeno na vhod - funkcija `init_sensor_touch`. Za zgled smo uporabili tipalo za dotik (`TouchSensor`), vendar v sami kodi nismo uporabili njegove vrednosti. Klic te funkcije lahko mirno zakomentirate, morda pa vam vseeno pride kdaj prav.
 
-- Program se konča, če ugotovimo, da robot v trenutni tekmi ne tekmuje. Se pravi, da njegovega IDja ni na seznamu `currentGameTeams` v datoteki `gameData.json`, ki je del kode sledilca objektov (glej [navodila za sledenje objektom](https://github.com/RoboLiga/roboliga-meta/blob/master/Tehnicna-dokumentacija/Sledenje-objektom.md)). Poskrbite torej, da boste ustrezno nastavili zapise v `gameData.json`.
+- Program se konča, če ugotovimo, da robot v trenutni tekmi ne tekmuje. Se pravi, da njegovega IDja ni na seznamu `teams` na strežniku.
 
 - Robot miruje, če tekma ne teče (`game_state['gameOn'] == False`) ali če oznaka robota ni zaznana.
 
@@ -95,4 +97,6 @@ Nato lahko program poženete:
 
 - [Vodiči za programiranje EV3 v Pythonu](https://sites.google.com/site/ev3python/)
 
-- [Dokumentacija knjižnice `python-ev3dev`](https://ev3dev-lang.readthedocs.io/projects/python-ev3dev/en/stable/)
+- [Dokumentacija knjižnice `python-ev3dev`](https://ev3dev-lang.readthedocs.io/projects/python-ev3dev/en/ev3dev-jessie/)
+
+- [Programiranje robota v Pythonu z urejevalnikom Visual Studio Code](https://github.com/ev3dev/vscode-hello-python)
