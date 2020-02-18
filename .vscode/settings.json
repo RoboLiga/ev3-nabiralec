@@ -1,0 +1,4 @@
+{
+    "python.pythonPath": ".venv\\Scripts\\python.exe",
+    "ev3devBrowser.password": null // vstavi svoje geslo
+}
