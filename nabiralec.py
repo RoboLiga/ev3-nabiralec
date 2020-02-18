@@ -39,7 +39,7 @@ ROBOT_ID = 25
 # Naslov IP igralnega strežnika.
 SERVER_IP = "192.168.1.130:8088/game/"
 # Datoteka na igralnem strežniku s podatki o tekmi.
-GAME_ID = "ec0a"
+GAME_ID = "5a72"
 
 # Priklop motorjev na izhode.
 MOTOR_LEFT_PORT = 'outA'
@@ -381,7 +381,7 @@ def robot_die():
 # Nastavimo tipala in gumbe.
 print('Priprava tipal ... ', end='', flush=True)
 btn = Button()
-sensor_touch = init_sensor_touch()
+#sensor_touch = init_sensor_touch()
 print('OK!')
 
 # Nastavimo velika motorja. Priklopljena naj bosta na izhoda A in D.
@@ -421,10 +421,10 @@ print('Robot tekmuje in ima interno oznako "' + team_my_tag + '"')
 # Doloci cilj za robota (seznam točk na poligonu).
 # Našem primeru se bo vozil po notranjih kotih obeh košar.
 targets_list = [
-    Point(game_state['fields']['baskets'][team_my_tag]['bottomLeft']),
-    Point(game_state['fields']['baskets'][team_my_tag]['topLeft']),
-    Point(game_state['fields']['baskets'][team_op_tag]['topRight']),
-    Point(game_state['fields']['baskets'][team_op_tag]['bottomRight']),
+    Point(game_state['fields']['baskets']['team1']['bottomRight']),
+    Point(game_state['fields']['baskets']['team1']['topRight']),
+    Point(game_state['fields']['baskets']['team2']['topLeft']),
+    Point(game_state['fields']['baskets']['team2']['bottomLeft']),
 ]
 print('Seznam ciljnih tock:')
 for trgt in targets_list:
