@@ -93,7 +93,7 @@ Nato lahko program poženete:
 
 - [Uradna stran projekta ev3dev](https://www.ev3dev.org/)
 
-- [Vodiči za programiranje EV3 v Pythonu](https://sites.google.com/site/ev3python/)
+- [Vodiči za programiranje EV3 v Pythonu](https://sites.google.com/site/ev3devpython/)
 
 - [Dokumentacija knjižnice `python-ev3dev`](https://ev3dev-lang.readthedocs.io/projects/python-ev3dev/en/ev3dev-jessie/)
 
