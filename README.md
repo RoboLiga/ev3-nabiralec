@@ -1,6 +1,6 @@
 # ev3-nabiralec
 
-Demonstracijski program za robota Lego Mindstorms EV3, ki se zna premikati po danih točkah na poligonu. Namenjeno tekmovanju [Robo liga FRI 2020](https://www.fri.uni-lj.si/sl/robo-liga-fri).
+Demonstracijski program za robota Lego Mindstorms EV3, ki se zna premikati po danih točkah na poligonu. Namenjeno tekmovanju [Robo liga FRI](https://www.fri.uni-lj.si/sl/robo-liga-fri).
 
 Program je napisan v Python3 ([knjižnica python-ev3dev](https://ev3dev-lang.readthedocs.io/projects/python-ev3dev/en/ev3dev-jessie/)) in deluje na operacijskem sistemu [ev3dev](https://www.ev3dev.org/).
 
@@ -10,9 +10,7 @@ Sledite navodilom [ev3dev Getting Started](https://www.ev3dev.org/docs/getting-s
 
 Na robota se povežete prek protokola SSH, datoteke pa nalagate nanj prek protokola SFTP. Privzeto je uporabniško ime `robot` in geslo `maker`.
 
-- Če uporabljate Windows, vam priporočamo uporabo programa [MobaXterm](https://mobaxterm.mobatek.net/), ki združuje odjemalca za SSH in SFTP v učinkovitem grafičnem uporabniškem vmesniku.
-
-- Enostavnejša možnost pa je uporaba urejevalnika [Visual Studio Code](https://code.visualstudio.com/) v kombinaciji z razširitvijo [EV3 Device Browser](https://github.com/ev3dev/vscode-ev3dev-browser). Za namestitev in konfiguracijo [sledite tem izčrpnim navodilom](https://sites.google.com/site/ev3python/setting-up-vs-code).
+Priporočamo vam uporabo urejevalnika [Visual Studio Code](https://code.visualstudio.com/) v kombinaciji z razširitvijo [EV3 Device Browser](https://github.com/ev3dev/vscode-ev3dev-browser). Za namestitev in konfiguracijo [sledite tem izčrpnim navodilom](https://sites.google.com/site/ev3python/setting-up-vs-code).
 
 ## Namestitev potrebnih paketov
 
