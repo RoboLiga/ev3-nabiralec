@@ -10,7 +10,7 @@ Sledite navodilom [ev3dev Getting Started](https://www.ev3dev.org/docs/getting-s
 
 Na robota se povežete prek protokola SSH, datoteke pa nalagate nanj prek protokola SFTP. Privzeto je uporabniško ime `robot` in geslo `maker`.
 
-Priporočamo vam uporabo urejevalnika [Visual Studio Code](https://code.visualstudio.com/) v kombinaciji z razširitvijo [EV3 Device Browser](https://github.com/ev3dev/vscode-ev3dev-browser). Za namestitev in konfiguracijo [sledite tem izčrpnim navodilom](https://sites.google.com/site/ev3python/setting-up-vs-code).
+Priporočamo vam uporabo urejevalnika [Visual Studio Code](https://code.visualstudio.com/) v kombinaciji z razširitvijo [EV3 Device Browser](https://github.com/ev3dev/vscode-ev3dev-browser). Za namestitev in konfiguracijo [sledite tem izčrpnim navodilom](https://sites.google.com/site/ev3devpython/setting-up-vs-code).
 
 ## Namestitev potrebnih paketov
 
