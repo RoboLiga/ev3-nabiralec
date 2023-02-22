@@ -10,7 +10,7 @@ Sledite navodilom [ev3dev Getting Started](https://www.ev3dev.org/docs/getting-s
 
 Na robota se povežete prek protokola SSH, datoteke pa nalagate nanj prek protokola SFTP. Privzeto je uporabniško ime `robot` in geslo `maker`.
 
-Priporočamo vam uporabo urejevalnika [Visual Studio Code](https://code.visualstudio.com/) v kombinaciji z razširitvijo [EV3 Device Browser](https://github.com/ev3dev/vscode-ev3dev-browser). Za namestitev in konfiguracijo [sledite tem izčrpnim navodilom](https://sites.google.com/site/ev3devpython/setting-up-vs-code).
+Priporočamo vam uporabo urejevalnika [Visual Studio Code](https://code.visualstudio.com/) v kombinaciji z razširitvijo [ev3dev-browser](https://github.com/ev3dev/vscode-ev3dev-browser). Za namestitev in konfiguracijo [sledite tem izčrpnim navodilom](https://sites.google.com/site/ev3devpython/setting-up-vs-code).
 
 ### Sprememba imena kocke (hostname) in gesla
 
@@ -43,6 +43,26 @@ V terminalu na robotu se premaknite v mapo, ki vsebuje zgornjo datoteko. Najprej
 Nato lahko program poženete:
 
 `./nabiralec.py`
+
+### VS Code in ev3dev-browser
+
+Če uporabljate Visual Studio Code in razširitev ev3dev-browser, lahko program naložite na kocko in ga poženete preprosto s pritiskom na tipko <kbd>F5</kbd>. 
+
+Pri tem morate imeti v mapi `.vscode` datoteko `launch.json` in v njej naslednjo konfiguracijo:
+
+```json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Download and Run Current File",
+            "type": "ev3devBrowser",
+            "request": "launch",
+            "program": "/home/robot/${workspaceFolderBasename}/${relativeFile}"
+        }
+    ]
+}
+```
 
 ## Kratek opis delovanja programa
 
