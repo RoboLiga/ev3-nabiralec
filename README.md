@@ -4,13 +4,22 @@ Demonstracijski program za robota Lego Mindstorms EV3, ki se zna premikati po da
 
 Program je napisan v Python3 ([knjižnica python-ev3dev](https://ev3dev-lang.readthedocs.io/projects/python-ev3dev/en/ev3dev-jessie/)) in deluje na operacijskem sistemu [ev3dev](https://www.ev3dev.org/).
 
-## Priprava okolja
+## Priprava okolja - ev3dev
 
 Sledite navodilom [ev3dev Getting Started](https://www.ev3dev.org/docs/getting-started/), da pridobite operacijski sistem `ev3dev-stretch` in ga namestite na SD kartico, ki ste jo dobili s kompletom. Za priklop v brezžično omrežje uporabite adapter za WiFi, ki ste ga prav tako dobili v kompletu.
 
 Na robota se povežete prek protokola SSH, datoteke pa nalagate nanj prek protokola SFTP. Privzeto je uporabniško ime `robot` in geslo `maker`.
 
 Priporočamo vam uporabo urejevalnika [Visual Studio Code](https://code.visualstudio.com/) v kombinaciji z razširitvijo [EV3 Device Browser](https://github.com/ev3dev/vscode-ev3dev-browser). Za namestitev in konfiguracijo [sledite tem izčrpnim navodilom](https://sites.google.com/site/ev3devpython/setting-up-vs-code).
+
+### Sprememba imena kocke (hostname) in gesla
+
+Privzeto ime kocke je `ev3dev` in privzeto geslo je `maker`. Priporočamo, da ta dva podatka nemudoma spremenite. Uporabite ukaz:
+
+`sudo ev3dev-config`
+
+in sledite navodilom.
+
 
 ## Namestitev potrebnih paketov
 
