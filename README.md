@@ -10,7 +10,17 @@ Sledite navodilom [ev3dev Getting Started](https://www.ev3dev.org/docs/getting-s
 
 Na robota se povežete prek protokola SSH, datoteke pa nalagate nanj prek protokola SFTP. Privzeto je uporabniško ime `robot` in geslo `maker`.
 
+### VS Code in ev3dev-browser
+
 Priporočamo vam uporabo urejevalnika [Visual Studio Code](https://code.visualstudio.com/) v kombinaciji z razširitvijo [ev3dev-browser](https://github.com/ev3dev/vscode-ev3dev-browser). Za namestitev in konfiguracijo [sledite tem izčrpnim navodilom](https://sites.google.com/site/ev3devpython/setting-up-vs-code).
+
+Da pri povezovanju na robota ne boste vpisovali gesla vedno znova, ga lahko vpišete v `.vscode/settings.json` (ustvarite mapo `.vscode` in v njej datoteko `settings.json`, če še ne obstaja):
+
+```json
+{
+    "ev3devBrowser.password": null // sem vstavi geslo za robota
+}
+```
 
 ### Sprememba imena kocke (hostname) in gesla
 
@@ -21,6 +31,9 @@ Uporabite ukaz:
 `sudo ev3dev-config`
 
 in sledite navodilom.
+
+
+
 
 
 ## Namestitev potrebnih paketov
