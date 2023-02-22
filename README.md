@@ -14,7 +14,9 @@ Priporočamo vam uporabo urejevalnika [Visual Studio Code](https://code.visualst
 
 ### Sprememba imena kocke (hostname) in gesla
 
-Privzeto ime kocke je `ev3dev` in privzeto geslo je `maker`. Priporočamo, da ta dva podatka nemudoma spremenite. Uporabite ukaz:
+Privzeto ime kocke je `ev3dev` in privzeto geslo je `maker`. Priporočamo, da ta dva podatka nemudoma spremenite. 
+
+Uporabite ukaz:
 
 `sudo ev3dev-config`
 
