@@ -18,7 +18,7 @@ Da pri povezovanju na robota ne boste vpisovali gesla vedno znova, ga lahko vpi≈
 
 ```json
 {
-    "ev3devBrowser.password": null // sem vstavi geslo za robota
+    "ev3devBrowser.password": "sem-vstavi-geslo-svojega-robota"
 }
 ```
 
