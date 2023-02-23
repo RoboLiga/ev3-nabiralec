@@ -33,9 +33,6 @@ Uporabite ukaz:
 in sledite navodilom.
 
 
-
-
-
 ## Namestitev potrebnih paketov
 
 Povežite se na robota in v terminalu izvršite naslednje ukaze za namestitev paketov `pycurl` in `ujson`:
@@ -84,13 +81,13 @@ Pri tem morate imeti v mapi `.vscode` datoteko `launch.json` in v njej naslednjo
     ```Python
     # ID robota. Spremenite, da ustreza številki označbe, ki je določena vaši ekipi.
     ROBOT_ID = 10
-    # Naslov IP igralnega strežnika.
-    SERVER_IP = "192.168.1.130:8088/game/"
+    # URL igralnega strežnika.
+    SERVER_URL = "192.168.1.130:8088/game/"
     # Datoteka na igralnem strežniku s podatki o tekmi.
     GAME_ID = "ec0a"
     ```
 
-- Na naslovu `SERVER_IP/GAME_ID` dobimo podatke o tekmi v formatu JSON.
+- Na naslovu `SERVER_URL/GAME_ID` dobimo podatke o tekmi v formatu JSON.
 
 - Vzpostavitev povezave s strežnikom in pošiljanje zahteve:
 
@@ -99,22 +96,22 @@ Pri tem morate imeti v mapi `.vscode` datoteko `launch.json` in v njej naslednjo
     game_state = conn.request()
     ```
 
-- Predpostavljamo, da ste velika motorja priklopili na izhoda A in D, lahko pa to nastavite v spremenljivkah `MOTOR_LEFT_PORT` in `MOTOR_RIGHT_PORT`.
+- Predpostavljamo, da ste velika motorja priklopili na izhoda B in C, lahko pa to nastavite v spremenljivkah `MOTOR_LEFT_PORT` in `MOTOR_RIGHT_PORT`.
 
 - Del programa je namenjen preverjanju, ali je dotično tipalo priklopljeno na vhod - funkcija `init_sensor_touch`. Za zgled smo uporabili tipalo za dotik (`TouchSensor`), vendar v sami kodi nismo uporabili njegove vrednosti. Klic te funkcije lahko mirno zakomentirate, morda pa vam vseeno pride kdaj prav.
 
-- Program se konča, če ugotovimo, da robot v trenutni tekmi ne tekmuje. Se pravi, da njegovega IDja ni na seznamu `teams` na strežniku.
+- Program se konča, če ugotovimo, da robot v trenutni tekmi ne tekmuje. Se pravi, da njegovega IDja (`ROBOT_ID`) ni na seznamu `teams` na strežniku.
 
-- Robot miruje, če tekma ne teče (`game_state['gameOn'] == False`) ali če oznaka robota ni zaznana.
+- Robot miruje, če tekma ne teče (preverimo `game_state['game_on']`), če oznaka robota ni zaznana (to pove spremenljivka `robot_data_valid`) ali če je robotu zmanjkalo goriva (preverimo `game_state['teams'][ROBOT_ID]['fuel']`).
 
-- Program na robotu izvaja premikanje po vnaprej določenih točkah na poligonu. Seznam je definiran kot `targets_list`. V našem primeru se bo robot vozil po notranjih kotih obeh košar. [Več informacij o zapisu stanja tekme](https://github.com/RoboLiga/roboliga-meta/blob/master/Tehnicna-dokumentacija/Opis-game-json.md).
+- Program na robotu izvaja premikanje po vnaprej določenih točkah na poligonu. Seznam je definiran kot `targets_list`. V našem primeru se bo robot vozil po notranjih kotih obeh košar.
 
     ```Python
     targets_list = [
-        Point(game_state['field']['baskets'][team_my_tag]['bottomRight']),
-        Point(game_state['field']['baskets'][team_my_tag]['topRight']),
-        Point(game_state['field']['baskets'][team_op_tag]['topLeft']),
-        Point(game_state['field']['baskets'][team_op_tag]['bottomLeft']),
+        Point(game_state['fields']['blue_basket']['bottom_right']),
+        Point(game_state['fields']['blue_basket']['top_right']),
+        Point(game_state['fields']['red_basket']['top_left']),
+        Point(game_state['fields']['red_basket']['bottom_left']),
     ]
     ```
 - Robot izvaja štiri stanja, katerim seveda lahko dodate poljubna druga, denimo za zaznavanje bližnjega trka.
@@ -123,13 +120,11 @@ Pri tem morate imeti v mapi `.vscode` datoteko `launch.json` in v njej naslednjo
   - `TURN`: stanje obračanja robota na mestu z regulatorjem PID. Hitrost levega motorja je nasprotna vrednost hitrosti desnega motorja. Stanje je zaključeno, ko je robot obrnjen proti ciljni točki v toleranci `DIR_EPS` stopinj.
   - `DRIVE_STRAIGHT`: stanje vožnje "naravnost" (robot vmes tudi zavija, da ohranja ničelno napako v kotu med sabo in ciljem). Hitrost na motorju je sestavljena iz dveh delov: nazivna hitrost (base) in hitrost obračanja (turn). Vsaka od njih je podvržena regulaciji s svojim regulatorjem PID.
 
-
-
-- Za nastavitev hitrosti obeh motorjev uporabljamo regulator PID (sestavljen iz Proporcionalnega, Integralnega in oDvodnega člena), ki je določen z naslednjimi parametri:
+- Za nastavitev hitrosti obeh motorjev uporabljamo regulator PID (sestavljen iz Proporcionalnega, Integrirnega in diferencirnega člena), ki je določen z naslednjimi parametri:
   - `Kp`: ojačitev proporcionalnega dela regulatorja. Visoke vrednosti pomenijo hitrejši odziv sistema, vendar pozor: previsoke vrednosti povzročijo oscilacije in nestabilnost.
-  - `Ki`: ojačitev integralnega člena regulatorja. Izniči napako v ustaljenem stanju. Zmanjša odzivnost.
+  - `Ki`: ojačitev integrirnega člena regulatorja. Izniči napako v ustaljenem stanju. Zmanjša odzivnost.
   - `Kd`: ojačitev odvoda napake. Zmanjša čas umirjanja in poveča odzivnost.
-  - `integral_limit`: najvišja dovoljena vrednost integrala. Sčasoma namreč lahko integralni člen zelo naraste in ga je modro omejiti.
+  - `integral_limit`: najvišja dovoljena vrednost integrirnega člena. Sčasoma namreč lahko njegova vrednost zelo naraste in ga je modro omejiti.
   
   Povabljeni ste, da preizkušate različne nastavitve teh parametrov in s tem dosežete boljši (hitrejši/stabilnejši) odziv.
 
