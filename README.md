@@ -122,7 +122,7 @@ Pri tem morate imeti v mapi `.vscode` datoteko `launch.json` in v njej naslednjo
   - `TURN`: stanje obračanja robota na mestu z regulatorjem PID. Hitrost levega motorja je nasprotna vrednost hitrosti desnega motorja. Stanje je zaključeno, ko je robot obrnjen proti ciljni točki v toleranci `DIR_EPS` stopinj.
   - `DRIVE_STRAIGHT`: stanje vožnje "naravnost" (robot vmes tudi zavija, da ohranja ničelno napako v kotu med sabo in ciljem). Hitrost na motorju je sestavljena iz dveh delov: nazivna hitrost (base) in hitrost obračanja (turn). Vsaka od njih je podvržena regulaciji s svojim regulatorjem PID.
 
-- Za nastavitev hitrosti obeh motorjev uporabljamo regulator PID (sestavljen iz Proporcionalnega, Integrirnega in diferencirnega člena), ki je določen z naslednjimi parametri:
+- Za nastavitev hitrosti obeh motorjev uporabljamo regulator PID (sestavljen iz proporcionalnega, integrirnega in diferencirnega člena), ki je določen z naslednjimi parametri:
   - `Kp`: ojačitev proporcionalnega dela regulatorja. Visoke vrednosti pomenijo hitrejši odziv sistema, vendar pozor: previsoke vrednosti povzročijo oscilacije in nestabilnost.
   - `Ki`: ojačitev integrirnega člena regulatorja. Izniči napako v ustaljenem stanju. Zmanjša odzivnost.
   - `Kd`: ojačitev odvoda napake. Zmanjša čas umirjanja in poveča odzivnost.
