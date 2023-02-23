@@ -1,6 +1,8 @@
 # ev3-nabiralec
 
-Demonstracijski program za robota Lego Mindstorms EV3, ki se zna premikati po danih točkah na poligonu. Namenjeno tekmovanju [Robo liga FRI](https://www.fri.uni-lj.si/sl/robo-liga-fri).
+Demonstracijski program za robota Lego Mindstorms EV3, ki se zna premikati po danih točkah na poligonu. 
+
+Namenjeno tekmovanju [Robo liga FRI](https://www.fri.uni-lj.si/sl/robo-liga-fri).
 
 Program je napisan v Python3 ([knjižnica python-ev3dev](https://ev3dev-lang.readthedocs.io/projects/python-ev3dev/en/ev3dev-jessie/)) in deluje na operacijskem sistemu [ev3dev](https://www.ev3dev.org/).
 
