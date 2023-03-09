@@ -84,7 +84,7 @@ Pri tem morate imeti v mapi `.vscode` datoteko `launch.json` in v njej naslednjo
     # ID robota. Spremenite, da ustreza številki označbe, ki je določena vaši ekipi.
     ROBOT_ID = 10
     # URL igralnega strežnika.
-    SERVER_URL = "192.168.1.130:8088/game/"
+    SERVER_URL = "192.168.0.3:8088/game/"
     # Datoteka na igralnem strežniku s podatki o tekmi.
     GAME_ID = "ec0a"
     ```
