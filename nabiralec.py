@@ -28,7 +28,7 @@ import ujson
 import sys
 import math
 from io import BytesIO
-from time import time, sleep
+from time import time
 from enum import Enum
 from collections import deque
 
@@ -280,6 +280,7 @@ class Point():
     """
     Točka na poligonu.
     """
+    #TODO: implement __add__, __sub__, __eq__
 
     def __init__(self, position):
         self.x = position['x']
@@ -287,7 +288,7 @@ class Point():
 
     def __str__(self):
         return '('+str(self.x)+', '+str(self.y)+')'
-
+ 
 
 def get_angle(p1, a1, p2) -> float:
     """
@@ -411,22 +412,24 @@ game_state = conn.request()
 # Ali naš robot sploh tekmuje? Če tekmuje, ali je rdeča ali modra ekipa?
 
 if ROBOT_ID not in game_state['teams']:
-    print('Robot ne tekmuje.')
+    print(f'Robot v tekmi {game_state["id"]} ne tekmuje.')
     robot_die()
 
 my_color = game_state['teams'][ROBOT_ID]['color']
 print('Robot tekmuje v ekipi:', my_color)
 
-# Doloci cilj za robota (seznam točk na poligonu).
-# Našem primeru se bo vozil po notranjih kotih obeh košar.
-charging_station_1_center_x = (game_state['fields']['charging_station_1']['top_right']['x'] + game_state['fields']['charging_station_1']['top_left']['x']) / 2
-charging_station_1_center_y = (game_state['fields']['charging_station_1']['bottom_right']['y'] + game_state['fields']['charging_station_1']['top_right']['y']) / 2
-charging_station_1_center = Point({'x': charging_station_1_center_x, 'y': charging_station_1_center_y})
+# Določi cilje za robota (seznam točk na poligonu).
+# Našem primeru se bo vozil po notranjih kotih obeh košar, vmes pa bo obiskal polnilno postajo
+# Izračunajmo središče polnilne postaje 1
+chrg_st_1 = game_state['fields']['charging_station_1']
+chrg_st_1_center_x = (chrg_st_1['top_right']['x'] + chrg_st_1['top_left']['x']) / 2
+chrg_st_1_center_y = (chrg_st_1['bottom_right']['y'] + chrg_st_1['top_right']['y']) / 2
+chrg_st_1_center = Point({'x': chrg_st_1_center_x, 'y': chrg_st_1_center_y})
 
 targets_list = [
     Point(game_state['fields']['blue_basket']['bottom_right']),
     Point(game_state['fields']['blue_basket']['top_right']),
-    charging_station_1_center,
+    chrg_st_1_center,
     Point(game_state['fields']['red_basket']['top_left']),
     Point(game_state['fields']['red_basket']['bottom_left']),
 ]
@@ -527,7 +530,7 @@ while do_main_loop and not btn.down:
         time_left = game_state['time_left']
         # Koliko goriva ima še moj robot? (merjeno v času)
         fuel = game_state['teams'][ROBOT_ID]['fuel']
-        # Za testiranje bomo ignorirali to po francosko
+        # Za testiranje lahko to ignoriramo po francosko
         #fuel = 100
 
         # Pridobi pozicijo in orientacijo svojega robota
@@ -542,6 +545,7 @@ while do_main_loop and not btn.down:
         # Če tekma poteka in so podatki robota na voljo in robot ima še kaj goriva,
         # potem izračunamo novo hitrost na motorjih.
         # Sicer motorje ustavimo.
+        # TODO: lahko upoštevamo tudi game_paused
         if game_on and robot_data_valid and fuel > 0:
             # Razdalja med robotom in ciljem.
             target_dist = get_distance(robot_pos, target)
