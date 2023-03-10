@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-""" 
-Program za vodenje robota EV3 po seznamu tock na poligonu.
-[Robo liga FRI 2020: Cebelnjak]
+"""Program za vodenje robota EV3 po seznamu tock na poligonu.
+[Tekmovanje Robo liga FRI]
 """
 
 __author__ = "Laboratory for adaptive systems and parallel processing"
-__copyright__ = "Copyright 2020, UL FRI - LASPP"
+__copyright__ = "Copyright 2023, UL FRI - LASPP"
 __credits__ = ["Laboratory for adaptive systems and parallel processing"]
 __license__ = "GPL"
-__version__ = "0.1"
+__version__ = "0.2"
 __maintainer__ = "Nejc Ilc"
 __email__ = "nejc.ilc@fri.uni-lj.si"
 __status__ = "Active"
@@ -35,15 +34,15 @@ from collections import deque
 
 # Nastavitev najpomembnjših parametrov
 # ID robota. Spremenite, da ustreza številki označbe, ki je določena vaši ekipi.
-ROBOT_ID = 25
-# Naslov IP igralnega strežnika.
-SERVER_IP = "192.168.1.130:8088/game/"
-# Datoteka na igralnem strežniku s podatki o tekmi.
-GAME_ID = "5a72"
+ROBOT_ID = "22"
+# URL igralnega strežnika.
+SERVER_URL = "192.168.0.3:8088/game/"
+# Številka ID igre, v kateri je robot.
+GAME_ID = "tu-vpisite-id-igre"
 
 # Priklop motorjev na izhode.
-MOTOR_LEFT_PORT = 'outA'
-MOTOR_RIGHT_PORT = 'outD'
+MOTOR_LEFT_PORT = 'outB'
+MOTOR_RIGHT_PORT = 'outC'
 
 # Najvišja dovoljena hitrost motorjev (teoretično je to 1000).
 SPEED_MAX = 900
@@ -384,15 +383,18 @@ btn = Button()
 #sensor_touch = init_sensor_touch()
 print('OK!')
 
-# Nastavimo velika motorja. Priklopljena naj bosta na izhoda A in D.
+# Nastavimo velika motorja. Priklopljena naj bosta na izhoda MOTOR_LEFT_PORT in MOTOR_RIGHT_PORT.
 print('Priprava motorjev ... ', end='')
+# FIXME: Začasna rešitev problema obrnjenih strani poligona - zamenjamo levi in desni motor
+MOTOR_LEFT_PORT, MOTOR_RIGHT_PORT = MOTOR_RIGHT_PORT, MOTOR_LEFT_PORT
+
 motor_left = init_large_motor(MOTOR_LEFT_PORT)
 motor_right = init_large_motor(MOTOR_RIGHT_PORT)
 print('OK!')
 
 # Nastavimo povezavo s strežnikom.
-url = SERVER_IP + GAME_ID
-print('Vspostavljanje povezave z naslovom ' + url + ' ... ', end='', flush=True)
+url = SERVER_URL + GAME_ID
+print('Vzpostavljanje povezave z naslovom ' + url + ' ... ', end='', flush=True)
 conn = Connection(url)
 print('OK!')
 
@@ -406,35 +408,44 @@ print('%.4f s' % (conn.test_delay(num_iters=10)))
 # -----------------------------------------------------------------------------
 # Pridobimo podatke o tekmi.
 game_state = conn.request()
-# Ali naš robot sploh tekmuje? Če tekmuje, ali je team1 ali team2?
-if ROBOT_ID == game_state['teams']['team1']['id']:
-    team_my_tag = 'team1'
-    team_op_tag = 'team2'
-elif ROBOT_ID == game_state['teams']['team2']['id']:
-    team_my_tag = 'team2'
-    team_op_tag = 'team1'
-else:
+# Ali naš robot sploh tekmuje? Če tekmuje, ali je rdeča ali modra ekipa?
+
+if ROBOT_ID not in game_state['teams']:
     print('Robot ne tekmuje.')
     robot_die()
-print('Robot tekmuje in ima interno oznako "' + team_my_tag + '"')
+
+my_color = game_state['teams'][ROBOT_ID]['color']
+print('Robot tekmuje v ekipi:', my_color)
 
 # Doloci cilj za robota (seznam točk na poligonu).
 # Našem primeru se bo vozil po notranjih kotih obeh košar.
+charging_station_1_center_x = (game_state['fields']['charging_station_1']['top_right']['x'] + game_state['fields']['charging_station_1']['top_left']['x']) / 2
+charging_station_1_center_y = (game_state['fields']['charging_station_1']['bottom_right']['y'] + game_state['fields']['charging_station_1']['top_right']['y']) / 2
+charging_station_1_center = Point({'x': charging_station_1_center_x, 'y': charging_station_1_center_y})
+
 targets_list = [
-    Point(game_state['fields']['baskets']['team1']['bottomRight']),
-    Point(game_state['fields']['baskets']['team1']['topRight']),
-    Point(game_state['fields']['baskets']['team2']['topLeft']),
-    Point(game_state['fields']['baskets']['team2']['bottomLeft']),
+    Point(game_state['fields']['blue_basket']['bottom_right']),
+    Point(game_state['fields']['blue_basket']['top_right']),
+    charging_station_1_center,
+    Point(game_state['fields']['red_basket']['top_left']),
+    Point(game_state['fields']['red_basket']['bottom_left']),
 ]
 print('Seznam ciljnih tock:')
 for trgt in targets_list:
     print('\t' + str(trgt))
 
+targets_labels = [
+    'blue_basket_bottom_right',
+    'blue_basket_top_right',
+    'charging_station',
+    'red_basket_top_left',
+    'red_basket_bottom_left',
+    ]
 
 # -----------------------------------------------------------------------------
 # GLAVNA ZANKA
 # -----------------------------------------------------------------------------
-print('Izvajam glavno zanko. Prekini jo s pritiskon na tipko DOL.')
+print('Izvajam glavno zanko. Prekini jo s pritiskom na tipko DOL.')
 print('Cakam na zacetek tekme ...')
 
 # Začetno stanje.
@@ -497,6 +508,7 @@ while do_main_loop and not btn.down:
     # Zaznaj spremembo stanja.
     if state != state_old:
         state_changed = True
+        print('Sprememba stanja, novo stanje:', state)
     else:
         state_changed = False
     state_old = state
@@ -509,25 +521,28 @@ while do_main_loop and not btn.down:
     if game_state == -1:
         print('Napaka v paketu, ponovni poskus ...')
     else:
-        game_on = game_state['gameOn']
-        time_left = game_state['timeLeft']
+        # Ali tekma teče?
+        game_on = game_state['game_on']
+        # Koliko časa je do konca tekme?
+        time_left = game_state['time_left']
+        # Koliko goriva ima še moj robot? (merjeno v času)
+        fuel = game_state['teams'][ROBOT_ID]['fuel']
+        # Za testiranje bomo ignorirali to po francosko
+        #fuel = 100
 
-        # Pridobi pozicijo in orientacijo svojega robota;
-        # najprej pa ga poišči v tabeli vseh robotov na poligonu.
-        robot_pos = None
-        robot_dir = None
-        for robot_data in game_state['objects']['robots'].values():
-            if robot_data['id'] == ROBOT_ID:
-                robot_pos = Point(robot_data['position'])
-                robot_dir = robot_data['dir']
-        # Ali so podatki o robotu veljavni? Če niso, je zelo verjetno,
-        # da sistem ne zazna oznake na robotu.
-        robot_alive = (robot_pos is not None) and (robot_dir is not None)
+        # Pridobi pozicijo in orientacijo svojega robota
+        if ROBOT_ID in game_state['robots']:
+            robot_pos = Point(game_state['robots'][ROBOT_ID]['position'])
+            robot_dir = game_state['robots'][ROBOT_ID]['dir']
+            robot_data_valid = True
+        else:
+            # Sistem nima podatkov o našem robotu, morda ne zazna oznake na robotu.
+            robot_data_valid = False
 
-        # Če tekma poteka in je oznaka robota vidna na kameri,
+        # Če tekma poteka in so podatki robota na voljo in robot ima še kaj goriva,
         # potem izračunamo novo hitrost na motorjih.
         # Sicer motorje ustavimo.
-        if game_on and robot_alive:
+        if game_on and robot_data_valid and fuel > 0:
             # Razdalja med robotom in ciljem.
             target_dist = get_distance(robot_pos, target)
             # Kot med robotom in ciljem.
@@ -544,13 +559,20 @@ while do_main_loop and not btn.down:
                 # Stanje mirovanja - tu se odločamo, kaj bo robot sedaj počel.
                 speed_right = 0
                 speed_left = 0
-                # Preverimo, ali je robot na ciljni točki.
-                # Če ni, ga tja pošljemo.
+                                
+                # Preverimo, ali je robot na ciljni točki;
                 if target_dist > DIST_EPS:
+                    # če ni, ga tja pošljemo -> gremo v stanje TURN
                     state = State.TURN
                     robot_near_target_old = False
                 else:
+                    # če je, naložimo naslednji cilj, razen ...
                     state = State.LOAD_NEXT_TARGET
+                    # ... če je robot na polnilni postaji.
+                    if targets_labels[target_idx] == 'charging_station':
+                        # Počakaj do napolnjenosti.
+                        if fuel < 20:
+                            state = State.IDLE                    
 
             elif state == State.LOAD_NEXT_TARGET:
                 # Naložimo naslednjo ciljno točko iz seznama.
@@ -558,6 +580,8 @@ while do_main_loop and not btn.down:
                 # Če smo prišli do konca seznama, gremo spet od začetka
                 if target_idx >= len(targets_list):
                     target_idx = 0
+                print(targets_labels[target_idx])
+                # Gremo v stanje IDLE, da preverimo, ali smo morda že kar na cilju.
                 state = State.IDLE
 
             elif state == State.TURN:
@@ -597,7 +621,7 @@ while do_main_loop and not btn.down:
                     #   speed_right = -u
                     #   speed_left = u
                     #   Lahko bi tudi naredili droben trik in bi rekli:
-                    #       measurement= -target_angle.
+                    #       measurement = -target_angle.
                     #   V tem primeru bi bolj intuitivno nastavili
                     #   speed_right = u in speed_left = -u.
                     u = PID_turn.update(measurement=target_angle)
@@ -631,7 +655,7 @@ while do_main_loop and not btn.down:
                     # Razdalja do cilja je znotraj tolerance, zamenjamo stanje.
                     speed_right = 0
                     speed_left = 0
-                    state = State.LOAD_NEXT_TARGET
+                    state = State.IDLE #State.LOAD_NEXT_TARGET
                 elif timer_near_target < 0:
                     # Smo morda blizu cilja in je varnostna budilka potekla?
                     speed_right = 0
