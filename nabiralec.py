@@ -38,7 +38,7 @@ ROBOT_ID = "22"
 # URL igralnega strežnika.
 SERVER_URL = "192.168.0.3:8088/game/"
 # Številka ID igre, v kateri je robot.
-GAME_ID = "tu-vpisite-id-igre"
+GAME_ID = "793f"
 
 # Priklop motorjev na izhode.
 MOTOR_LEFT_PORT = 'outB'
@@ -386,8 +386,6 @@ print('OK!')
 
 # Nastavimo velika motorja. Priklopljena naj bosta na izhoda MOTOR_LEFT_PORT in MOTOR_RIGHT_PORT.
 print('Priprava motorjev ... ', end='')
-# FIXME: Začasna rešitev problema obrnjenih strani poligona - zamenjamo levi in desni motor
-MOTOR_LEFT_PORT, MOTOR_RIGHT_PORT = MOTOR_RIGHT_PORT, MOTOR_LEFT_PORT
 
 motor_left = init_large_motor(MOTOR_LEFT_PORT)
 motor_right = init_large_motor(MOTOR_RIGHT_PORT)
@@ -410,9 +408,8 @@ print('%.4f s' % (conn.test_delay(num_iters=10)))
 # Pridobimo podatke o tekmi.
 game_state = conn.request()
 # Ali naš robot sploh tekmuje? Če tekmuje, ali je rdeča ali modra ekipa?
-
 if ROBOT_ID not in game_state['teams']:
-    print(f'Robot v tekmi {game_state["id"]} ne tekmuje.')
+    print('Robot v tekmi', game_state['id'], 'ne tekmuje.')
     robot_die()
 
 my_color = game_state['teams'][ROBOT_ID]['color']
@@ -432,6 +429,7 @@ targets_list = [
     chrg_st_1_center,
     Point(game_state['fields']['red_basket']['top_left']),
     Point(game_state['fields']['red_basket']['bottom_left']),
+    chrg_st_1_center,
 ]
 print('Seznam ciljnih tock:')
 for trgt in targets_list:
@@ -443,6 +441,7 @@ targets_labels = [
     'charging_station',
     'red_basket_top_left',
     'red_basket_bottom_left',
+    'charging_station',
     ]
 
 # -----------------------------------------------------------------------------
@@ -526,6 +525,8 @@ while do_main_loop and not btn.down:
     else:
         # Ali tekma teče?
         game_on = game_state['game_on']
+        # Ali je tekma začasno zaustavljena?
+        game_paused = game_state['game_paused']
         # Koliko časa je do konca tekme?
         time_left = game_state['time_left']
         # Koliko goriva ima še moj robot? (merjeno v času)
@@ -542,11 +543,10 @@ while do_main_loop and not btn.down:
             # Sistem nima podatkov o našem robotu, morda ne zazna oznake na robotu.
             robot_data_valid = False
 
-        # Če tekma poteka in so podatki robota na voljo in robot ima še kaj goriva,
+        # Če tekma poteka in ni zaustavljena in so podatki robota na voljo in robot ima še kaj goriva,
         # potem izračunamo novo hitrost na motorjih.
         # Sicer motorje ustavimo.
-        # TODO: lahko upoštevamo tudi game_paused
-        if game_on and robot_data_valid and fuel > 0:
+        if game_on and not game_paused and robot_data_valid and fuel > 0:
             # Razdalja med robotom in ciljem.
             target_dist = get_distance(robot_pos, target)
             # Kot med robotom in ciljem.
@@ -612,7 +612,7 @@ while do_main_loop and not btn.down:
                     # v pozitivno smer.
                     # Primer:
                     #   Robot ima smer 90 stopinj (obrnjen je proti "severu").
-                    #   Cilj se nahaja na njegovi levi in da ga doseže,
+                    #   Cilj se nahaja na njegovi desni ("vzhod") in da ga doseže,
                     #   se mora obrniti za 90 stopinj.
                     #       setpoint=0
                     #       target_angle = measurement = 90
@@ -620,17 +620,17 @@ while do_main_loop and not btn.down:
                     #       u = funkcija, odvisna od error in parametrov PID.
                     #   Če imamo denimo Kp = 1, Ki = Kd = 0, potem bo u = -90.
                     #   Robot se mora zavrteti v pozitivno smer,
-                    #   torej z desnim kolesom naprej in levim nazaj.
+                    #   torej z desnim kolesom nazaj in levim naprej.
                     #   Zato:
-                    #   speed_right = -u
-                    #   speed_left = u
+                    #   speed_right = u
+                    #   speed_left = -u
                     #   Lahko bi tudi naredili droben trik in bi rekli:
                     #       measurement = -target_angle.
                     #   V tem primeru bi bolj intuitivno nastavili
-                    #   speed_right = u in speed_left = -u.
+                    #   speed_right = -u in speed_left = u.
                     u = PID_turn.update(measurement=target_angle)
-                    speed_right = -u
-                    speed_left = u
+                    speed_right = u
+                    speed_left = -u
 
             elif state == State.DRIVE_STRAIGHT:
                 # Vožnja robota naravnost proti ciljni točki.
@@ -675,8 +675,8 @@ while do_main_loop and not btn.down:
                     # Omejimo nazivno hitrost, ki je enaka za obe kolesi,
                     # da imamo še manevrski prostor za zavijanje.
                     u_base = min(max(u_base, -SPEED_BASE_MAX), SPEED_BASE_MAX)
-                    speed_right = -u_base - u_turn
-                    speed_left = -u_base + u_turn
+                    speed_right = -u_base + u_turn
+                    speed_left = -u_base -u_turn
 
             # Omejimo vrednosti za hitrosti na motorjih.
             speed_right = round(
