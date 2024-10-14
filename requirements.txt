@@ -1,0 +1,4 @@
+pillow==10.4.0
+pycurl==7.45.3
+python-ev3dev2==2.1.0.post1
+ujson==5.10.0
