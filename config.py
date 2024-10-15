@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 # Nastavitev najpomembnjših parametrov
 # ID robota. Spremenite, da ustreza številki označbe, ki je določena vaši ekipi.
 ROBOT_ID = "22"
