@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/home/robot/roboliga/bin/python
 # -*- coding: utf-8 -*-
 
 from enum import Enum
