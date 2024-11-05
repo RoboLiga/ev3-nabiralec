@@ -1,23 +1,29 @@
-#!/usr/bin/env python3
+#!/home/robot/roboliga/bin/python
 # -*- coding: utf-8 -*-
+
+from ev3dev2.motor import OUTPUT_B, OUTPUT_C
+from ev3dev2.sensor import INPUT_1
 
 # Nastavitev najpomembnjših parametrov
 # ID robota. Spremenite, da ustreza številki označbe, ki je določena vaši ekipi.
 ROBOT_ID = "22"
 # URL igralnega strežnika.
-SERVER_URL = "192.168.0.3:8088/game/"
+SERVER_URL = "192.168.1.44:8088/game/"
 # Številka ID igre, v kateri je robot.
 GAME_ID = "793f"
 
 # Priklop motorjev na izhode.
-MOTOR_LEFT_PORT = 'outB'
-MOTOR_RIGHT_PORT = 'outC'
+MOTOR_LEFT_PORT = OUTPUT_B
+MOTOR_RIGHT_PORT = OUTPUT_C
+
+# Priklop tipal na vhode.
+SENSOR_COLOR_PORT = INPUT_1
 
 # Najvišja dovoljena hitrost motorjev (teoretično je to 1000).
-SPEED_MAX = 900
+SPEED_MAX = 600
 # Najvišja dovoljena nazivna hitrost motorjev pri vožnji naravnost.
 # Naj bo manjša kot SPEED_MAX, da ima robot še možnost zavijati.
-SPEED_BASE_MAX = 800
+SPEED_BASE_MAX = 500
 
 # Parametri za PID
 # Obračanje na mestu in zavijanje med vožnjo naravnost

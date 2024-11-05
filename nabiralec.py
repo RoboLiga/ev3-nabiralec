@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/home/robot/roboliga/bin/python
 # -*- coding: utf-8 -*-
 
 """Program za vodenje robota EV3 po seznamu tock na poligonu.
@@ -15,14 +15,27 @@ __email__ = "nejc.ilc@fri.uni-lj.si"
 __status__ = "Active"
 
 
-# Če želite na svojem računalniku namestiti knjižnico python-ev3dev
+# Če želite na svojem računalniku namestiti knjižnico python-ev3dev2
 # in uprorabljati "code auto-completition":
-# pip install python-ev3dev
-from ev3dev.ev3 import TouchSensor, Button, LargeMotor, Sound
-# Na EV3 robotu je potrebno namestiti paketa ujson in pycurl:
+# pip install python-ev3dev2
+
+from ev3dev2.sensor.lego import ColorSensor
+from ev3dev2.motor import LargeMotor
+from ev3dev2.sound import Sound
+from ev3dev2.button import Button
+
+
+# Na EV3 robotu je potrebno posodobiti datoteko sources.list in namestiti paketa ujson in pycurl:
+# sudo nano /etc/apt/sources.list
+#   zakomentiramo vrstico: ""
+# 
+#   vrstico: "deb http://security.debian.org/ stretch/updates main contrib non-free"
+#   zamenjamo z: "deb http://archive.debian.org/debian-security stretch/updates main contrib non-free"
+# 
 # sudo apt-get update
 # sudo apt-get install python3-pycurl
 # sudo apt-get install python3-ujson
+
 import sys
 import math
 from collections import deque
@@ -71,18 +84,18 @@ def init_large_motor(port: str) -> LargeMotor:
     return motor
 
 
-def init_sensor_touch() -> TouchSensor:
+def init_sensor_color(port: str) -> ColorSensor:
     """
-    Preveri, ali je tipalo za dotik priklopljeno na katerikoli vhod. 
+    Preveri, ali je tipalo za barvo priklopljeno na katerikoli vhod. 
     Vrne objekt za tipalo.
     """
-    sensor = TouchSensor()
-    while not sensor.connected:
-        print('\nPriklopi tipalo za dotik in pritisni ter spusti gumb DOL.')
+    sensor = ColorSensor(port)
+    while not sensor.address:
+        print('\nPriklopi tipalo na izhod ' + port +
+              ' in pritisni ter spusti gumb DOL.')
         wait_for_button('down')
-        sensor = TouchSensor()
+        sensor = ColorSensor(port)
     return sensor
-
 
 def wait_for_button(btn_name: str = 'down'):
     """
@@ -125,7 +138,7 @@ def robot_die():
 # Nastavimo tipala in gumbe.
 print('Priprava tipal ... ', end='', flush=True)
 btn = Button()
-# sensor_touch = init_sensor_touch()
+sensor_color = init_sensor_color(SENSOR_COLOR_PORT)
 print('OK!')
 
 # Nastavimo velika motorja. Priklopljena naj bosta na izhoda MOTOR_LEFT_PORT in MOTOR_RIGHT_PORT.
