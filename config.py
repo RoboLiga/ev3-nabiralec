@@ -4,17 +4,22 @@
 from ev3dev2.motor import OUTPUT_B, OUTPUT_C
 from ev3dev2.sensor import INPUT_1
 
+
+# Debug nastavitve
+IGNORE_FUEL = False
+IGNORE_PAUSE = False
+
 # Nastavitev najpomembnjših parametrov
 # ID robota. Spremenite, da ustreza številki označbe, ki je določena vaši ekipi.
-ROBOT_ID = "22"
+ROBOT_ID = "25"
 # URL igralnega strežnika.
 SERVER_URL = "192.168.1.44:8088/game/"
 # Številka ID igre, v kateri je robot.
-GAME_ID = "793f"
+GAME_ID = "0cca"
 
 # Priklop motorjev na izhode.
-MOTOR_LEFT_PORT = OUTPUT_B
-MOTOR_RIGHT_PORT = OUTPUT_C
+MOTOR_LEFT_PORT = OUTPUT_C
+MOTOR_RIGHT_PORT = OUTPUT_B
 
 # Priklop tipal na vhode.
 SENSOR_COLOR_PORT = INPUT_1
