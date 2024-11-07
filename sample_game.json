@@ -1,0 +1,147 @@
+{
+    "id": "174d",
+    "game_on": false,
+    "game_paused": false,
+    "time_left": 100.0,
+    "teams": {
+        "25": {
+            "id": 25,
+            "color": "blue",
+            "name": "Demo",
+            "score": 0,
+            "fuel": 25.0,
+            "charging": false
+        },
+        "0": {
+            "id": 0,
+            "color": "red",
+            "name": "Ocvrte antenice",
+            "score": 0,
+            "fuel": 25.0,
+            "charging": false
+        }
+    },
+    "robots": {},
+    "objects": {
+        "004083c3": {
+            "id": "004083c3",
+            "position": {
+                "x": 300,
+                "y": 552
+            },
+            "dir": 28.926425835253614
+        },
+        "5437b29a": {
+            "id": "5437b29a",
+            "position": {
+                "x": 1480,
+                "y": 1507
+            },
+            "dir": -114.67686317033704
+        },
+        "9cf4c8f4": {
+            "id": "9cf4c8f4",
+            "position": {
+                "x": 285,
+                "y": 809
+            },
+            "dir": -135.0
+        }
+    },
+    "fields": {
+        "game_field": {
+            "top_left": {
+                "x": 0,
+                "y": 0
+            },
+            "top_right": {
+                "x": 3600,
+                "y": 0
+            },
+            "bottom_right": {
+                "x": 3600,
+                "y": 2100
+            },
+            "bottom_left": {
+                "x": 0,
+                "y": 2100
+            }
+        },
+        "blue_plastic": {
+            "top_left": {
+                "x": -4,
+                "y": 1051
+            },
+            "top_right": {
+                "x": 529,
+                "y": 1046
+            },
+            "bottom_right": {
+                "x": 533,
+                "y": 2106
+            },
+            "bottom_left": {
+                "x": 3,
+                "y": 2100
+            }
+        },
+        "blue_glass": {
+            "top_left": {
+                "x": -3,
+                "y": 3
+            },
+            "top_right": {
+                "x": 537,
+                "y": -4
+            },
+            "bottom_right": {
+                "x": 529,
+                "y": 1044
+            },
+            "bottom_left": {
+                "x": -2,
+                "y": 1048
+            }
+        },
+        "red_plastic": {
+            "top_left": {
+                "x": 3065,
+                "y": 1054
+            },
+            "top_right": {
+                "x": 3600,
+                "y": 1047
+            },
+            "bottom_right": {
+                "x": 3600,
+                "y": 2097
+            },
+            "bottom_left": {
+                "x": 3066,
+                "y": 2097
+            }
+        },
+        "red_glass": {
+            "top_left": {
+                "x": 3067,
+                "y": 1
+            },
+            "top_right": {
+                "x": 3603,
+                "y": -3
+            },
+            "bottom_right": {
+                "x": 3597,
+                "y": 1047
+            },
+            "bottom_left": {
+                "x": 3065,
+                "y": 1054
+            }
+        }
+    },
+    "charging_time": 5,
+    "charging_amount": 25,
+    "robot_time": 25,
+    "game_time": 100
+}

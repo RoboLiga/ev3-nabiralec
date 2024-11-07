@@ -1,3 +1,5 @@
 {
-    "ev3devBrowser.password": "sem-vstavi-geslo-svojega-robota"
+    "ev3devBrowser.password": "maker",
+    "ev3devBrowser.download.include": "**/*.py",
+    "ev3devBrowser.download.exclude": ".venv/*"
 }
