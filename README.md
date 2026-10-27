@@ -35,7 +35,21 @@ Uporabite ukaz:
 in sledite navodilom.
 
 
-## Namestitev potrebnih paketov
+## Razvojno okolje na računalniku (uv)
+
+Za lokalni razvoj (samodejno dopolnjevanje kode v urejevalniku in zagon pomožnih skript) projekt uporablja [uv](https://docs.astral.sh/uv/). Odvisnosti so navedene v `pyproject.toml`, natančne različice pa so zaklenjene v `uv.lock`. Različica Pythona (3.11, enako kot na kocki) je določena v `.python-version`.
+
+Namestite uv po [uradnih navodilih](https://docs.astral.sh/uv/getting-started/installation/), nato v mapi projekta izvršite:
+
+`uv sync`
+
+Ukaz po potrebi prenese Python 3.11, ustvari virtualno okolje `.venv` in vanj namesti vse pakete. V urejevalniku (VS Code, PyCharm) za tolmač izberite `.venv`.
+
+Nov paket dodate z ukazom `uv add <paket>`, skripto v okolju projekta pa poženete z `uv run <skripta>`.
+
+Okolje uv je namenjeno samo računalniku. Na robotu paketov ne nameščate z uv, temveč z `apt-get`, kot je opisano spodaj.
+
+## Namestitev potrebnih paketov na robota
 
 Povežite se na robota in v terminalu izvršite naslednje ukaze za namestitev paketov `pycurl` in `ujson`:
 
