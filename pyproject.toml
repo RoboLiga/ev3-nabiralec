@@ -1,0 +1,12 @@
+[project]
+name = "Predloga za EV3"
+version = "1.0.0"
+description = "To je predloga za EV3 kocke z operacijskim sistemom ev3dev, ki poganja Python 3.11"
+readme = "README.md"
+
+requires-python = ">=3.11"
+dependencies = [
+    "pycurl==7.49.0",
+    "python-ev3dev2==2.1.0.post1",
+    "ujson==6.0.0",
+]
