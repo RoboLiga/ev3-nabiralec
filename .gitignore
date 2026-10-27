@@ -1,2 +1,5 @@
 .vscode/settings.json
 venv
+__pycache__/
+*.pyc
+.venv/
