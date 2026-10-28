@@ -1,5 +1,5 @@
 [project]
-name = "Predloga za EV3"
+name = "predloga-EV3"
 version = "1.0.0"
 description = "To je predloga za EV3 kocke z operacijskim sistemom ev3dev, ki poganja Python 3.11"
 readme = "README.md"

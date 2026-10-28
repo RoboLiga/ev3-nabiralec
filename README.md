@@ -114,21 +114,21 @@ Pri tem morate imeti v mapi `.vscode` datoteko `launch.json` in v njej naslednjo
 
 - Predpostavljamo, da ste velika motorja priklopili na izhoda B in C, lahko pa to nastavite v spremenljivkah `MOTOR_LEFT_PORT` in `MOTOR_RIGHT_PORT`.
 
-- Del programa je namenjen preverjanju, ali je dotično tipalo priklopljeno na vhod - funkcija `init_sensor_touch`. Za zgled smo uporabili tipalo za dotik (`TouchSensor`), vendar v sami kodi nismo uporabili njegove vrednosti. Klic te funkcije lahko mirno zakomentirate, morda pa vam vseeno pride kdaj prav.
-
 - Program se konča, če ugotovimo, da robot v trenutni tekmi ne tekmuje. Se pravi, da njegovega IDja (`ROBOT_ID`) ni na seznamu `teams` na strežniku.
 
-- Robot miruje, če tekma ne teče (preverimo `game_state['game_on']`), če oznaka robota ni zaznana (to pove spremenljivka `robot_data_valid`) ali če je robotu zmanjkalo goriva (preverimo `game_state['teams'][ROBOT_ID]['fuel']`).
+- Robot miruje, če tekma ne teče (preverimo `game_state['game_on']`) ali če oznaka robota ni zaznana (to pove spremenljivka `robot_data_valid`).
 
-- Program na robotu izvaja premikanje po vnaprej določenih točkah na poligonu. Seznam je definiran kot `targets_list`. V našem primeru se bo robot vozil po notranjih kotih obeh košar.
+- Program na robotu izvaja premikanje po vnaprej določenih točkah na poligonu. Seznam je definiran kot `targets_list`. V našem primeru se gradbenik (oranžna ekipa) vozi med središčem igralnega polja in gradbiščem, okoljevarstvenik (zelena ekipa) pa med središčem igralnega polja in svojim poljem.
 
     ```Python
-    targets_list = [
-        Point(game_state['fields']['blue_basket']['bottom_right']),
-        Point(game_state['fields']['blue_basket']['top_right']),
-        Point(game_state['fields']['red_basket']['top_left']),
-        Point(game_state['fields']['red_basket']['bottom_left']),
-    ]
+    game_field_center = get_field_center(game_state["fields"]["game_field"])
+    construction_site_center = get_field_center(game_state["fields"]["construction_site"])
+    environmentalists_center = get_field_center(game_state["fields"]["environmentalists"])
+
+    if is_builder:
+        targets_list = [game_field_center, construction_site_center]
+    else:
+        targets_list = [game_field_center, environmentalists_center]
     ```
 - Robot izvaja štiri stanja, katerim seveda lahko dodate poljubna druga, denimo za zaznavanje bližnjega trka.
   - `IDLE`: stanje mirovanja in tudi začetno stanje. Tu se odločamo, kaj bo robot sedaj počel.

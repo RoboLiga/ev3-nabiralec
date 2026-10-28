@@ -19,7 +19,6 @@ __status__ = "Active"
 # in uprorabljati "code auto-completition":
 # pip install python-ev3dev2
 
-from ev3dev2.sensor.lego import ColorSensor
 from ev3dev2.motor import LargeMotor
 from ev3dev2.sound import Sound
 from ev3dev2.button import Button
@@ -85,18 +84,14 @@ def init_large_motor(port: str) -> LargeMotor:
     return motor
 
 
-def init_sensor_color(port: str) -> ColorSensor:
+def get_field_center(field: dict) -> Point:
     """
-    Preveri, ali je tipalo za barvo priklopljeno na katerikoli vhod. 
-    Vrne objekt za tipalo.
+    Izračunaj središče polja `field` (povprečje njegovih štirih oglišč).
     """
-    sensor = ColorSensor(port)
-    while not sensor.address:
-        print('\nPriklopi tipalo na izhod ' + port +
-              ' in pritisni ter spusti gumb DOL.')
-        wait_for_button('down')
-        sensor = ColorSensor(port)
-    return sensor
+    return Point({
+        "x": math.ceil(fmean([pnt["x"] for pnt in field.values()])),
+        "y": math.ceil(fmean([pnt["y"] for pnt in field.values()]))
+    })
 
 
 def wait_for_button(btn_name: str = 'down'):
@@ -140,13 +135,10 @@ def robot_die():
 
 
 # -----------------------------------------------------------------------------
-# NASTAVITVE TIPAL, MOTORJEV IN POVEZAVE S STREŽNIKOM
+# NASTAVITVE GUMBOV, MOTORJEV IN POVEZAVE S STREŽNIKOM
 # -----------------------------------------------------------------------------
-# Nastavimo tipala in gumbe.
-print('Priprava tipal ... ', end='', flush=True)
+# Nastavimo gumbe.
 btn = Button()
-sensor_color = init_sensor_color(SENSOR_COLOR_PORT)
-print('OK!')
 
 # Nastavimo velika motorja. Priklopljena naj bosta na izhoda MOTOR_LEFT_PORT in MOTOR_RIGHT_PORT.
 print('Priprava motorjev ... ', end='')
@@ -171,68 +163,46 @@ print('%.4f s' % (conn.test_delay(num_iters=10)))
 # -----------------------------------------------------------------------------
 # Pridobimo podatke o tekmi.
 game_state = conn.request()
-# Ali naš robot sploh tekmuje? Če tekmuje, ali je rdeča ali modra ekipa?
+# Ali naš robot sploh tekmuje? Če tekmuje, ali je gradbenik (oranžna ekipa) ali okoljevarstvenik (zelena ekipa)?
 if ROBOT_ID not in game_state['teams']:
     print('Robot v tekmi', game_state['id'], 'ne tekmuje.')
     robot_die()
 
 my_color = game_state['teams'][ROBOT_ID]['color']
+is_builder = my_color == 'orange'
 print('Robot tekmuje v ekipi:', my_color)
 
 # Določi cilje za robota (seznam točk na poligonu).
-# Našem primeru se bo vozil po notranjih kotih obeh košar, vmes pa bo obiskal polnilno postajo
-# Izračunajmo središče polnilne postaje 1
+# Gradbenik vozi med središčem igralnega polja in gradbiščem (construction_site),
+# kamor mora pripeljati gradbeni material (construction_material).
+# Okoljevarstvenik vozi med središčem igralnega polja in svojim poljem (environmentalists),
+# drevesa (trees) pa mora posaditi na igralnem polju.
+game_field_center = get_field_center(game_state["fields"]["game_field"])
+construction_site_center = get_field_center(game_state["fields"]["construction_site"])
+environmentalists_center = get_field_center(game_state["fields"]["environmentalists"])
 
-plastic_blue_center = Point({
-    "x": math.ceil(fmean([pnt["x"] for pnt in game_state["fields"]["blue_plastic"].values()])),
-    "y": math.ceil(fmean([pnt["y"] for pnt in game_state["fields"]["blue_plastic"].values()]))
-})
+if is_builder:
+    targets_list = [
+        game_field_center,
+        construction_site_center,
+    ]
+    targets_labels = [
+        'game_field_center',
+        'construction_site_center',
+    ]
+else:
+    targets_list = [
+        game_field_center,
+        environmentalists_center,
+    ]
+    targets_labels = [
+        'game_field_center',
+        'environmentalists_center',
+    ]
 
-plastic_red_center = Point({
-    "x": math.ceil(fmean([pnt["x"] for pnt in game_state["fields"]["red_plastic"].values()])),
-    "y": math.ceil(fmean([pnt["y"] for pnt in game_state["fields"]["red_plastic"].values()]))
-})
-
-glass_blue_center = Point({
-    "x": math.ceil(fmean([pnt["x"] for pnt in game_state["fields"]["blue_glass"].values()])),
-    "y": math.ceil(fmean([pnt["y"] for pnt in game_state["fields"]["blue_glass"].values()]))
-})
-
-glass_red_center = Point({
-    "x": math.ceil(fmean([pnt["x"] for pnt in game_state["fields"]["red_glass"].values()])),
-    "y": math.ceil(fmean([pnt["y"] for pnt in game_state["fields"]["red_glass"].values()]))
-})
-
-charge_blue_center = Point({
-    "x": math.ceil(fmean([plastic_blue_center.x, glass_blue_center.x])),
-    "y": math.ceil(fmean([plastic_blue_center.y, glass_blue_center.y]))
-})
-
-charge_red_center = Point({
-    "x": math.ceil(fmean([plastic_red_center.x, glass_red_center.x])),
-    "y": math.ceil(fmean([plastic_red_center.y, glass_red_center.y]))
-})
-
-targets_list = [
-    plastic_blue_center,
-    plastic_red_center,
-    charge_red_center,
-    glass_red_center,
-    glass_blue_center,
-    charge_blue_center
-]
 print('Seznam ciljnih tock:')
 for trgt in targets_list:
     print('\t' + str(trgt))
-
-targets_labels = [
-    'plastic_blue_center',
-    'plastic_red_center',
-    'charging_station',
-    'glass_red_center',
-    'glass_blue_center',
-    'charging_station',
-]
 
 
 # -----------------------------------------------------------------------------
@@ -321,10 +291,6 @@ try:
             game_paused = game_state['game_paused']
             # Koliko časa je do konca tekme?
             time_left = game_state['time_left']
-            # Koliko goriva ima še moj robot? (merjeno v času)
-            fuel = game_state['teams'][ROBOT_ID]['fuel']
-            # Za testiranje lahko to ignoriramo po francosko
-            # fuel = 100
 
             # Pridobi pozicijo in orientacijo svojega robota
             if ROBOT_ID in game_state['robots']:
@@ -335,10 +301,10 @@ try:
                 # Sistem nima podatkov o našem robotu, morda ne zazna oznake na robotu.
                 robot_data_valid = False
 
-            # Če tekma poteka in ni zaustavljena in so podatki robota na voljo in robot ima še kaj goriva,
+            # Če tekma poteka in ni zaustavljena in so podatki robota na voljo,
             # potem izračunamo novo hitrost na motorjih.
             # Sicer motorje ustavimo.
-            if game_on and (IGNORE_PAUSE or not game_paused) and robot_data_valid and (IGNORE_FUEL or fuel > 0):
+            if game_on and (IGNORE_PAUSE or not game_paused) and robot_data_valid:
                 # Razdalja med robotom in ciljem.
                 target_dist = get_distance(robot_pos, target)
                 # Kot med robotom in ciljem.
@@ -362,13 +328,8 @@ try:
                         state = State.TURN
                         robot_near_target_old = False
                     else:
-                        # če je, naložimo naslednji cilj, razen ...
+                        # če je, naložimo naslednji cilj.
                         state = State.LOAD_NEXT_TARGET
-                        # ... če je robot na polnilni postaji.
-                        if targets_labels[target_idx] == 'charging_station':
-                            # Počakaj do napolnjenosti.
-                            if fuel < 20:
-                                state = State.IDLE
 
                 elif state == State.LOAD_NEXT_TARGET:
                     # Naložimo naslednjo ciljno točko iz seznama.

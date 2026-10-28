@@ -2,11 +2,9 @@
 # -*- coding: utf-8 -*-
 
 from ev3dev2.motor import OUTPUT_B, OUTPUT_C
-from ev3dev2.sensor import INPUT_1
 
 
 # Debug nastavitve
-IGNORE_FUEL = False
 IGNORE_PAUSE = False
 
 # Nastavitev najpomembnjših parametrov
@@ -20,9 +18,6 @@ GAME_ID = "0cca"
 # Priklop motorjev na izhode.
 MOTOR_LEFT_PORT = OUTPUT_C
 MOTOR_RIGHT_PORT = OUTPUT_B
-
-# Priklop tipal na vhode.
-SENSOR_COLOR_PORT = INPUT_1
 
 # Najvišja dovoljena hitrost motorjev (teoretično je to 1000).
 SPEED_MAX = 600
